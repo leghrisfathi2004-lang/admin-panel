@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="no-referrer" />
+<title>IPTV Admin · Sign In</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-6">
+
+<div class="bg-stage"></div>
+<div class="grid-overlay"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+<div class="orb o3"></div>
+
+<div id="toasts" class="toast-wrap"></div>
+
+<main class="glass w-full max-w-md p-8 md:p-10 relative">
+  <!-- TV signal indicator at top -->
+  <div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 px-4 py-1.5 rounded-full bg-[#0e0e1f] border border-purple-500/30 text-[10px] tracking-[0.3em] text-purple-300 uppercase">
+    ● LIVE · SECURE
+  </div>
+
+  <div class="flex flex-col items-center text-center mb-8 mt-2">
+    <div class="logo-mark mb-4">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#07070f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <polyline points="8 22 12 18 16 22"/>
+      </svg>
+    </div>
+    <h1 class="text-2xl font-extrabold scanline">IPTV <span class="text-purple-400">CONTROL</span></h1>
+    <p class="text-sm text-purple-200/60 mt-2">Admin access only · Restricted area</p>
+  </div>
+
+  <form id="loginForm" autocomplete="off" novalidate>
+    <div class="field">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+        <circle cx="12" cy="7" r="4"/>
+      </svg>
+      <input id="username" name="username" type="text" placeholder=" " required minlength="3" maxlength="32" autocomplete="username" />
+      <label for="username">Username</label>
+    </div>
+
+    <div class="field">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2"/>
+        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+      </svg>
+      <input id="password" name="password" type="password" placeholder=" " required minlength="8" maxlength="200" autocomplete="current-password" />
+      <label for="password">Password</label>
+    </div>
+
+    <button id="submitBtn" type="submit" class="btn-neon w-full mt-2">
+      <span id="btnLabel">Sign in</span>
+      <span id="btnSpinner" class="spinner hidden"></span>
+    </button>
+  </form>
+
+  <div class="mt-6 flex items-center justify-center gap-2 text-[11px] text-purple-200/40 tracking-wider uppercase">
+    <span class="inline-block w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
+    Encrypted Session · v1.0
+  </div>
+</main>
+
+<script src="/js/login.js" nonce="__CSP_NONCE__"></script>
+</body>
+</html>

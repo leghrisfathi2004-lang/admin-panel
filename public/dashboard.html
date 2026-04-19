@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="referrer" content="no-referrer" />
+<title>IPTV Admin · Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="min-h-screen">
+
+<div class="bg-stage"></div>
+<div class="grid-overlay"></div>
+<div class="orb o1"></div>
+<div class="orb o2"></div>
+
+<div id="toasts" class="toast-wrap"></div>
+
+<!-- Top nav -->
+<nav class="glass mx-4 md:mx-8 mt-6 px-5 py-3 flex items-center justify-between rounded-2xl">
+  <div class="logo">
+    <div class="logo-mark">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#07070f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"/>
+        <polyline points="8 22 12 18 16 22"/>
+      </svg>
+    </div>
+    <div class="logo-text">IPTV <span>CONTROL</span></div>
+  </div>
+  <div class="flex items-center gap-3">
+    <div class="hidden md:flex items-center gap-2 text-xs text-purple-200/60 px-3 py-1.5 rounded-full bg-white/5 border border-purple-500/20">
+      <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span>
+      <span id="userTag">…</span>
+    </div>
+    <button id="logoutBtn" class="btn-ghost btn-danger">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16 17 21 12 16 7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout
+    </button>
+  </div>
+</nav>
+
+<main class="px-4 md:px-8 py-6 max-w-7xl mx-auto">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+    <div>
+      <h1 class="text-3xl md:text-4xl font-extrabold scanline">Hosts <span class="text-purple-400">Manager</span></h1>
+      <p class="text-purple-200/60 mt-2 text-sm">Add, remove and manage IPTV server hosts that the app will try in order.</p>
+    </div>
+    <button id="newHostBtn" class="btn-neon">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="12" y1="5" x2="12" y2="19"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      New Host
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+    <div class="stat">
+      <div class="w-10 h-10 grid place-items-center rounded-xl bg-purple-500/20 text-purple-300">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M12 3v18"/></svg>
+      </div>
+      <div>
+        <div class="num" id="statTotal">0</div>
+        <div class="label">Total hosts</div>
+      </div>
+    </div>
+    <div class="stat">
+      <div class="w-10 h-10 grid place-items-center rounded-xl bg-green-500/20 text-green-300">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div>
+        <div class="num" id="statActive">0</div>
+        <div class="label">Active</div>
+      </div>
+    </div>
+    <div class="stat col-span-2 md:col-span-1">
+      <div class="w-10 h-10 grid place-items-center rounded-xl bg-cyan-500/20 text-cyan-300">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      </div>
+      <div>
+        <div class="num" id="statDisabled">0</div>
+        <div class="label">Disabled</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search -->
+  <div class="mb-5 relative">
+    <svg class="absolute left-4 top-1/2 -translate-y-1/2 text-purple-300" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input id="search" type="text" placeholder="Search hosts by name, URL or notes…"
+      class="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-purple-500/20 text-white placeholder:text-purple-200/40 focus:outline-none focus:border-purple-500 focus:shadow-[0_0_0_3px_rgba(139,92,246,0.2)] transition-all" />
+  </div>
+
+  <!-- Host list -->
+  <div id="hostList" class="grid gap-3"></div>
+  <div id="emptyState" class="hidden text-center py-16 text-purple-200/50">
+    <div class="text-5xl mb-3 opacity-40">📡</div>
+    <p>No hosts yet. Add your first one to get started.</p>
+  </div>
+</main>
+
+<!-- Modal -->
+<div id="modal" class="modal-backdrop hidden">
+  <div class="glass modal">
+    <h2 id="modalTitle" class="text-xl font-bold mb-1">Add new host</h2>
+    <p class="text-purple-200/50 text-sm mb-5">The app will try enabled hosts ordered by priority (highest first).</p>
+
+    <form id="hostForm" autocomplete="off" novalidate>
+      <input type="hidden" id="hostId" />
+
+      <div class="field">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+        </svg>
+        <input id="hostName" type="text" placeholder=" " required maxlength="80" />
+        <label for="hostName">Name (e.g. Server EU)</label>
+      </div>
+
+      <div class="field">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 0 20M12 2a15.3 15.3 0 0 0 0 20"/>
+        </svg>
+        <input id="hostUrl" type="text" placeholder=" " required maxlength="500" />
+        <label for="hostUrl">URL (https://…)</label>
+      </div>
+
+      <div class="field">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        </svg>
+        <input id="hostNotes" type="text" placeholder=" " maxlength="300" />
+        <label for="hostNotes">Notes (optional)</label>
+      </div>
+
+      <div class="flex items-center gap-6 mt-2 mb-5">
+        <div class="flex items-center gap-3">
+          <label for="hostEnabled" class="text-sm text-purple-200/80">Enabled</label>
+          <label class="switch">
+            <input type="checkbox" id="hostEnabled" checked />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="flex items-center gap-3 flex-1">
+          <label for="hostPriority" class="text-sm text-purple-200/80 whitespace-nowrap">Priority</label>
+          <input id="hostPriority" type="number" min="0" max="9999" value="100"
+            class="w-full px-3 py-2 rounded-lg bg-white/5 border border-purple-500/20 text-white focus:outline-none focus:border-purple-500" />
+        </div>
+      </div>
+
+      <div class="flex gap-3 justify-end">
+        <button type="button" id="cancelBtn" class="btn-ghost">Cancel</button>
+        <button type="submit" id="saveBtn" class="btn-neon">
+          <span id="saveLabel">Save</span>
+          <span id="saveSpinner" class="spinner hidden"></span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Confirm modal -->
+<div id="confirmModal" class="modal-backdrop hidden">
+  <div class="glass modal">
+    <h2 class="text-xl font-bold mb-2">Delete host?</h2>
+    <p class="text-purple-200/60 text-sm mb-5" id="confirmText">This action cannot be undone.</p>
+    <div class="flex gap-3 justify-end">
+      <button id="confirmCancel" class="btn-ghost">Cancel</button>
+      <button id="confirmOk" class="btn-ghost btn-danger">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/dashboard.js" nonce="__CSP_NONCE__"></script>
+</body>
+</html>
